@@ -1,3 +1,6 @@
+"""
+Основной модуль нашего телеграм-бота
+"""
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.dispatcher.filters import Text
 from aiogram.dispatcher import FSMContext
@@ -5,7 +8,6 @@ from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 
 
-# it_hackathon_bot
 token = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
 bot = Bot(token=token, parse_mode='MarkdownV2')
 dp = Dispatcher(bot, storage=MemoryStorage())
@@ -58,11 +60,22 @@ async def food_size_chosen(msg: types.Message, state: FSMContext):
     await msg.answer(f'Вы выбрали {msg.text.lower()} порцию {user_data["chosen_food"]}', reply_markup=types.ReplyKeyboardRemove())
     await state.finish()
 
+
+async def admin_menu(msg: types.Message):
+    """
+    Выводит меню для администратора
+    """
+    user_id = msg.from_user.id
+    txt = f'{user_id=}'
+    await msg.answer(txt)
+
 # -------------------------------------------------------------------  Зона регистрации событий-триггеров
 dp.register_message_handler(cancel_cmd, commands='cancel', state='*')
 dp.register_message_handler(food_start, commands='food', state="*")
 dp.register_message_handler(food_chosen, state=OrderFood.waiting_for_food)
 dp.register_message_handler(food_size_chosen, state=OrderFood.waiting_for_size)
+
+dp.register_message_handler(admin_menu, commands='admin')
 
 
 
