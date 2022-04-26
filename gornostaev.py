@@ -33,7 +33,8 @@ async def cmd_test1(message: types.Message):
 @dp.message_handler(commands="help")
 async def cmd_test1(message: types.Message):
     await message.reply('''Функционал бота "Подвиг народа":
-/search [ФИО через пробел] - поиск человека по выбранным данным.''')
+/search [ФИО через пробел] - поиск человека по выбранным данным.
+/minfo - отображение основной информации о музее.''')
 # Отклик на команду "help"
 
 
@@ -50,6 +51,20 @@ async def cmd_test1(message: types.Message):
     else:
         persons = [person['f2'] + " " + person['f3'] + " " + person['f4'] + " - " + person['f9'] for person in response['records']]
         await bot.send_message(message.chat.id,  emojize(text(*persons, sep='\n')), parse_mode=ParseMode.MARKDOWN)
+
+
+@dp.message_handler(commands="minfo")
+async def cmd_test1(message: types.Message):
+    await message.reply('''Музей Победы — главный военно-исторический музей
+России по тематике Великой Отечественной и Второй
+мировой войн, один из крупнейших военно-исторических
+музеев мира, общероссийский научно-исследовательский и
+культурно-просветительский центр.
+Сегодня музей является одним из ведущих институтов
+противодействия попыткам фальсификации истории, а
+также центром патриотического воспитания новых 
+поколений.''')
+    # отклик на команду minfo (информация о музее)
 
 
 async def search(search_string):    # Функция поиска людей
