@@ -22,9 +22,19 @@ logging.basicConfig(level=logging.INFO)
 # Включаем логирование, чтобы не пропустить важные сообщения
 # ________________________________________________________________
 
+
+@dp.message_handler(commands='start')
+async def cmd_test1(message: types.Message):
+    await message.reply('''Добро пожаловать, {new_member.mention}!
+Для ознакомления с функционалом напишите "/help"''')
+# Приветствие
+
+
 @dp.message_handler(commands="help")
 async def cmd_test1(message: types.Message):
-    await message.reply('Подвиг народа')
+    await message.reply('''Функционал бота "Подвиг народа":
+/search [ФИО через пробел] - поиск человека по выбранным данным.''')
+# Отклик на команду "help"
 
 
 @dp.message_handler(commands="search")
@@ -38,12 +48,12 @@ async def cmd_test1(message: types.Message):
     if response['result'] != 'OK':
         await bot.send_message(message.chat.id, "Что-то пошло не так", parse_mode=ParseMode.MARKDOWN)
     else:
-        persons = [person['f2'] + " " + person['f3'] + " " + person['f4'] + " " + person['f9'] for person in response['records']]
+        persons = [person['f2'] + " " + person['f3'] + " " + person['f4'] + " - " + person['f9'] for person in response['records']]
         await bot.send_message(message.chat.id,  emojize(text(*persons, sep='\n')), parse_mode=ParseMode.MARKDOWN)
 
 
 async def search(search_string):    # Функция поиска людей
-    xmlParam = f'<request firstRecordPosition="0" maxNumRecords="51" countResults="true">'
+    xmlParam = f'<request firstRecordPosition="0" maxNumRecords="20" countResults="true">'
     xmlParam += f'<record fulltextfield="{search_string}" entity="Человек Награждение"></record>'
     xmlParam += f'<record fulltextfield="{search_string}" entity="Человек Представление"></record>'
     xmlParam += f'<record fulltextfield="{search_string}" entity="Человек Картотека"></record>'
@@ -62,4 +72,3 @@ if __name__ == "__main__":
     executor.start_polling(dp, skip_updates=True)
 
 # __________________________________________________
-
