@@ -52,7 +52,7 @@ async def food_chosen(msg: types.Message, state: FSMContext):
     await msg.answer('Выберите размер порции', reply_markup=kb)
 
 
-async def food_size_chosen(msg: types.Message, state: FSMContext):
+def food_size_chosen(msg: types.Message, state: FSMContext):
     if msg.text.lower() not in aviable_sizes:
         await msg.answer('Выберите размер из списка')
         return
@@ -61,13 +61,26 @@ async def food_size_chosen(msg: types.Message, state: FSMContext):
     await state.finish()
 
 
+async def user_is_admin(user_id)->bool:
+    """
+    Проверяет является ли пользователь администраторром
+    """
+    return True  # Для тестов всегда возвращает True
+    if user_id in {'1234567'}:
+        return True
+    return False
+
+
 async def admin_menu(msg: types.Message):
     """
     Выводит меню для администратора
     """
     user_id = msg.from_user.id
-    txt = f'{user_id=}'
-    await msg.answer(txt)
+    if not user_is_admin(user_id):
+        await msg.answer('Это только для администраторов')
+    else:
+        txt = f'{user_id=}'
+        await msg.answer(txt)
 
 # -------------------------------------------------------------------  Зона регистрации событий-триггеров
 dp.register_message_handler(cancel_cmd, commands='cancel', state='*')
