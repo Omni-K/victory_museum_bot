@@ -112,4 +112,14 @@ dp.register_message_handler(food_size_chosen, state=OrderFood.waiting_for_size)
 
 dp.register_message_handler(admin_menu, commands='admin')
 
-executor.start_polling(dp)
+
+async def shutdown(dispatcher: Dispatcher):
+    """
+    Закрытие соединения с хранилищем состояний диспетчера
+    """
+    await dispatcher.storage.close()
+    await dispatcher.storage.wait_closed()
+
+
+if __name__ == '__main__':
+    executor.start_polling(dp, on_shutdown=shutdown)
