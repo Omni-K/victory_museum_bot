@@ -6,9 +6,10 @@ from aiogram.dispatcher.filters import Text
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
+import keyboards as kbs
 
-
-token = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+#  @JC_telebot
+token = '1794414260:AAHictDJ7hxUNIGSKtdLfbHnYCc9vWuV4eU'
 bot = Bot(token=token, parse_mode='MarkdownV2')
 dp = Dispatcher(bot, storage=MemoryStorage())
 
@@ -24,7 +25,6 @@ class OrderFood(StatesGroup):
 async def cancel_cmd(msg: types.Message, state: FSMContext):
     await state.finish()
     await msg.answer('Отменено', reply_markup=types.ReplyKeyboardRemove())
-
 
 
 @dp.message_handler(commands='start')
@@ -52,16 +52,37 @@ async def food_chosen(msg: types.Message, state: FSMContext):
     await msg.answer('Выберите размер порции', reply_markup=kb)
 
 
-def food_size_chosen(msg: types.Message, state: FSMContext):
+async def food_size_chosen(msg: types.Message, state: FSMContext):
     if msg.text.lower() not in aviable_sizes:
         await msg.answer('Выберите размер из списка')
         return
     user_data = await state.get_data()
-    await msg.answer(f'Вы выбрали {msg.text.lower()} порцию {user_data["chosen_food"]}', reply_markup=types.ReplyKeyboardRemove())
+    await msg.answer(f'Вы выбрали {msg.text.lower()} порцию {user_data["chosen_food"]}',
+                     reply_markup=types.ReplyKeyboardRemove())
     await state.finish()
 
 
-async def user_is_admin(user_id)->bool:
+@dp.message_handler(commands='menu')
+async def user_menu(msg: types.Message):
+    """
+    Показывает меню кнопок для пользователя
+    """
+    await msg.answer('Что Вас интересует?', reply_markup=kbs.user_menu)
+
+
+@dp.callback_query_handler(text='expo_info_btn')
+async def process_callback_button1(callback_query: types.CallbackQuery):
+    await bot.answer_callback_query(callback_query.id)
+    await bot.send_message(callback_query.from_user.id, 'Нажата: информация')
+
+
+@dp.callback_query_handler(text='social_btn')
+async def process_callback_button1(callback_query: types.CallbackQuery):
+    await bot.answer_callback_query(callback_query.id)
+    await bot.send_message(callback_query.from_user.id, 'Нажата: Соцсети')
+
+# ----------------------------------------------------------------------------  Зона администратора
+async def user_is_admin(user_id) -> bool:
     """
     Проверяет является ли пользователь администраторром
     """
@@ -82,6 +103,7 @@ async def admin_menu(msg: types.Message):
         txt = f'{user_id=}'
         await msg.answer(txt)
 
+
 # -------------------------------------------------------------------  Зона регистрации событий-триггеров
 dp.register_message_handler(cancel_cmd, commands='cancel', state='*')
 dp.register_message_handler(food_start, commands='food', state="*")
@@ -89,8 +111,5 @@ dp.register_message_handler(food_chosen, state=OrderFood.waiting_for_food)
 dp.register_message_handler(food_size_chosen, state=OrderFood.waiting_for_size)
 
 dp.register_message_handler(admin_menu, commands='admin')
-
-
-
 
 executor.start_polling(dp)
