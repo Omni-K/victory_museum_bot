@@ -30,6 +30,10 @@ buy_on_site = InlineKeyboardButton('Купить на сайте', url='https://
 tikets_kb.add(buy_in_tg, buy_on_site)
 
 
+social_kb = InlineKeyboardMarkup(row_width=1)
+vk_btn = InlineKeyboardButton('VK', url='https://vk.com/muzeypobedy')
+social_kb.add(vk_btn)
+
 # markup_request = ReplyKeyboardMarkup(resize_keyboard=True).add(
 #     KeyboardButton('Отправить свой контакт ☎️', request_contact=True)
 # ).add(
