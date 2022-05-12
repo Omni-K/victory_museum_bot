@@ -82,6 +82,14 @@ async def process_callback_button1(callback_query: types.CallbackQuery):
     await bot.send_message(callback_query.from_user.id, 'Нажата\: Соцсети')
 
 
+# ----------------------------------------------------------------------------------------  Покупка билетов
+@dp.callback_query_handler(text='buytikets')
+async def buytikets(callback_query: types.CallbackQuery):
+    await bot.send_message(callback_query.from_user.id, 'Выберите удобный для вас способ покупки',
+                           reply_markup=kbs.tikets_kb)
+
+
+# ----------------------------------------------------------------------------------------  Подписка
 @dp.callback_query_handler(text='user_subscribe')
 async def yn(callback_query: types.CallbackQuery):
     await bot.send_message(callback_query.from_user.id, 'Согласитесь на подписку', reply_markup=kbs.subscribe_yn)
@@ -96,11 +104,13 @@ async def subscribe_yes(callback_query: types.CallbackQuery):
         if userid in file.read():
             allreadyexist = True
         if allreadyexist:
-            await bot.send_message(callback_query.from_user.id, 'Упс, Вы уже подписаны на рассылку', reply_markup=kbs.nokb)
+            await bot.send_message(callback_query.from_user.id, 'Упс, Вы уже подписаны на рассылку',
+                                   reply_markup=kbs.nokb)
         else:
             with open("user_ids.txt", "a+") as file:
                 file.write(userid + "\n")
-                await bot.send_message(callback_query.from_user.id, 'Вы подписались на рассылку\!', reply_markup=kbs.nokb)
+                await bot.send_message(callback_query.from_user.id, 'Вы подписались на рассылку\!',
+                                       reply_markup=kbs.nokb)
 
 
 # ----------------------------------------------------------------------------  Зона администратора

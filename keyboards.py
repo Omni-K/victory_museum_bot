@@ -7,10 +7,11 @@ user_menu = InlineKeyboardMarkup(row_width=1)
 expo_info_btn = InlineKeyboardButton('Часы работы и стоимость', callback_data='expo_info_btn')
 social_btn = InlineKeyboardButton('Мы в соцсетях', callback_data='social_btn')
 subscribe_btn = InlineKeyboardButton('Подписаться на новости', callback_data='user_subscribe')
-
+buytiket_btn = InlineKeyboardButton('Купить билеты', callback_data='buytikets')
 user_menu.add(expo_info_btn,
               social_btn,
               subscribe_btn,
+              buytiket_btn,
               )
 
 admin_menu = InlineKeyboardMarkup(row_width=1)
@@ -22,6 +23,11 @@ subscribe_yn = InlineKeyboardMarkup(row_width=1)
 subscribe_yes = InlineKeyboardButton('Подписаться', callback_data='subscribe_yes')
 subscribe_no = InlineKeyboardButton('Не подписываться', callback_data='subscribe_no')
 subscribe_yn.add(subscribe_yes, subscribe_no)
+
+tikets_kb = InlineKeyboardMarkup(row_width=1)
+buy_in_tg = InlineKeyboardButton('Купить в телеграм', callback_data='buy_in_tg')
+buy_on_site = InlineKeyboardButton('Купить на сайте', url='https://tickets.victorymuseum.ru/ru/#id=1')
+tikets_kb.add(buy_in_tg, buy_on_site)
 
 
 # markup_request = ReplyKeyboardMarkup(resize_keyboard=True).add(
