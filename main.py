@@ -29,7 +29,7 @@ async def cancel_cmd(msg: types.Message, state: FSMContext):
 
 @dp.message_handler(commands='start')
 async def fnc_start(message: types.Message):
-    await message.reply('Здравствуйте!')
+    await message.reply('Здравствуйте\!')
 
 
 async def food_start(msg: types.Message):
@@ -67,19 +67,41 @@ async def user_menu(msg: types.Message):
     """
     Показывает меню кнопок для пользователя
     """
-    await msg.answer('Что Вас интересует?', reply_markup=kbs.user_menu)
+    await msg.answer('Что Вас интересует\?', reply_markup=kbs.user_menu)
 
 
 @dp.callback_query_handler(text='expo_info_btn')
 async def process_callback_button1(callback_query: types.CallbackQuery):
     await bot.answer_callback_query(callback_query.id)
-    await bot.send_message(callback_query.from_user.id, 'Нажата: информация')
+    await bot.send_message(callback_query.from_user.id, 'Нажата\: информация')
 
 
 @dp.callback_query_handler(text='social_btn')
 async def process_callback_button1(callback_query: types.CallbackQuery):
     await bot.answer_callback_query(callback_query.id)
-    await bot.send_message(callback_query.from_user.id, 'Нажата: Соцсети')
+    await bot.send_message(callback_query.from_user.id, 'Нажата\: Соцсети')
+
+
+@dp.callback_query_handler(text='user_subscribe')
+async def yn(callback_query: types.CallbackQuery):
+    await bot.send_message(callback_query.from_user.id, 'Согласитесь на подписку', reply_markup=kbs.subscribe_yn)
+
+
+@dp.callback_query_handler(text='subscribe_yes')
+async def subscribe_yes(callback_query: types.CallbackQuery):
+    userid = str(callback_query.from_user.id)
+
+    allreadyexist = False
+    with open("user_ids.txt", "r") as file:
+        if userid in file.read():
+            allreadyexist = True
+        if allreadyexist:
+            await bot.send_message(callback_query.from_user.id, 'Упс, Вы уже подписаны на рассылку', reply_markup=kbs.nokb)
+        else:
+            with open("user_ids.txt", "a+") as file:
+                file.write(userid + "\n")
+                await bot.send_message(callback_query.from_user.id, 'Вы подписались на рассылку\!', reply_markup=kbs.nokb)
+
 
 # ----------------------------------------------------------------------------  Зона администратора
 async def user_is_admin(user_id) -> bool:
@@ -100,8 +122,22 @@ async def admin_menu(msg: types.Message):
     if not user_is_admin(user_id):
         await msg.answer('Это только для администраторов')
     else:
-        txt = f'{user_id=}'
-        await msg.answer(txt)
+        txt = f'{user_id}'
+        await msg.answer(txt, reply_markup=kbs.admin_menu)
+
+
+@dp.callback_query_handler(text='admin_notify')
+async def notify(message):
+    command_sender = message.from_user.id
+    if not user_is_admin(command_sender):
+        await message.answer('Это только для админеов')
+    else:
+        txt = f'{command_sender=}'
+        await message.answer(txt)
+        with open('user_ids.txt') as ids:
+            for line in ids:
+                user_id = int(line.strip())
+                await bot.send_message(user_id, f'уведомление от {command_sender}')
 
 
 # -------------------------------------------------------------------  Зона регистрации событий-триггеров

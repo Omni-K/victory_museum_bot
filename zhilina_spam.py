@@ -27,17 +27,6 @@ async def notify_users(message: types.Message):
             if id != '':
                 await bot.send_message(id, 'ало')
 
-@dp.message_handler(commands='news')
-async def yn(message):
-    kb = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    btn1 = 'Да'
-    btn2 = 'Нет'
-    kb.add(btn1)
-    kb.add(btn2)
-    await message.answer(
-        'Нажимая функцию /news, вы соглашаетесь на рассылку новостей. Если Вы согласны, нажмите да, иначе - нет',
-        reply_markup=kb)
-
 
 @dp.message_handler()
 async def main(message: types.Message):
@@ -58,6 +47,19 @@ async def main(message: types.Message):
     elif message.text == 'Нет':
         return
 
+
+@dp.message_handler(commands=['send'])
+def notify(message):
+    command_sender = message.from_user.id
+    if not user_is_admin(command_sender):
+        await message.answer('Это только для админеов')
+    else:
+        txt = f'{command_sender=}'
+        await message.answer(txt)
+        with open('user_ids.txt') as ids:
+            for line in ids:
+                user_id = int(line.strip())
+                bot.send_message(user_id, f'уведомление от {command_sender}')
 
 
 if __name__ == "__main__":

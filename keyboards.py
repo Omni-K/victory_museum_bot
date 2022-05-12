@@ -1,12 +1,27 @@
 from aiogram.types import ReplyKeyboardRemove, ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, \
     InlineKeyboardButton
 
+nokb = ReplyKeyboardRemove()
+
 user_menu = InlineKeyboardMarkup(row_width=2)
 expo_info_btn = InlineKeyboardButton('Часы работы и стоимость', callback_data='expo_info_btn')
 social_btn = InlineKeyboardButton('Мы в соцсетях', callback_data='social_btn')
+subscribe_btn = InlineKeyboardButton('Подписаться на новости', callback_data='user_subscribe')
 user_menu.add(expo_info_btn,
               social_btn,
+              subscribe_btn,
               )
+
+admin_menu = InlineKeyboardMarkup(row_width=1)
+notify_btn = InlineKeyboardButton('Запустить рассылку новостей', callback_data='admin_notify')
+admin_menu.add(notify_btn
+               )
+
+subscribe_yn = InlineKeyboardMarkup(row_width=1)
+subscribe_yes = InlineKeyboardButton('Подписаться', callback_data='subscribe_yes')
+subscribe_no = InlineKeyboardButton('Не подписываться', callback_data='subscribe_no')
+subscribe_yn.add(subscribe_yes, subscribe_no)
+
 
 # markup_request = ReplyKeyboardMarkup(resize_keyboard=True).add(
 #     KeyboardButton('Отправить свой контакт ☎️', request_contact=True)
