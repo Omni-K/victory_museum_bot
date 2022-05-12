@@ -3,10 +3,11 @@ from aiogram.types import ReplyKeyboardRemove, ReplyKeyboardMarkup, KeyboardButt
 
 nokb = ReplyKeyboardRemove()
 
-user_menu = InlineKeyboardMarkup(row_width=2)
+user_menu = InlineKeyboardMarkup(row_width=1)
 expo_info_btn = InlineKeyboardButton('Часы работы и стоимость', callback_data='expo_info_btn')
 social_btn = InlineKeyboardButton('Мы в соцсетях', callback_data='social_btn')
 subscribe_btn = InlineKeyboardButton('Подписаться на новости', callback_data='user_subscribe')
+
 user_menu.add(expo_info_btn,
               social_btn,
               subscribe_btn,

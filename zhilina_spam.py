@@ -28,38 +28,6 @@ async def notify_users(message: types.Message):
                 await bot.send_message(id, 'ало')
 
 
-@dp.message_handler()
-async def main(message: types.Message):
-    nokb = types.ReplyKeyboardRemove()
-    userid = str(message.from_user.id)
-
-    if message.text == 'Да':
-        allreadyexist = False
-        with open("user_ids.txt", "r") as file:
-            if userid in file.read():
-                allreadyexist = True
-        if allreadyexist:
-            await message.answer('Упс, Вы уже подписаны на рассылку', reply_markup=nokb, parse_mode='MarkdownV2')
-        else:
-            with open("user_ids.txt", "a+") as file:
-                file.write(userid + "\n")
-                await message.answer('Вы подписались на рассылку\!', reply_markup=nokb, parse_mode='MarkdownV2')
-    elif message.text == 'Нет':
-        return
-
-
-@dp.message_handler(commands=['send'])
-def notify(message):
-    command_sender = message.from_user.id
-    if not user_is_admin(command_sender):
-        await message.answer('Это только для админеов')
-    else:
-        txt = f'{command_sender=}'
-        await message.answer(txt)
-        with open('user_ids.txt') as ids:
-            for line in ids:
-                user_id = int(line.strip())
-                bot.send_message(user_id, f'уведомление от {command_sender}')
 
 
 if __name__ == "__main__":
