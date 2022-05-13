@@ -36,6 +36,10 @@ url_podvig = InlineKeyboardButton('Прочитать об экспозиции'
                                   url='https://victorymuseum.ru/excursions/podvig-naroda/podvig-naroda/')
 podvig_btn.add(url_podvig)
 
+social_kb = InlineKeyboardMarkup(row_width=1)
+vk_btn = InlineKeyboardButton('VK', url='https://vk.com/muzeypobedy')
+social_kb.add(vk_btn)
+
 # markup_request = ReplyKeyboardMarkup(resize_keyboard=True).add(
 #     KeyboardButton('Отправить свой контакт ☎️', request_contact=True)
 # ).add(
