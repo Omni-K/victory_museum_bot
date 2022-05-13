@@ -8,7 +8,7 @@ expo_info_btn = InlineKeyboardButton('Часы работы и стоимост�
 social_btn = InlineKeyboardButton('Мы в соцсетях', callback_data='social_btn')
 subscribe_btn = InlineKeyboardButton('Подписаться на новости', callback_data='user_subscribe')
 buytiket_btn = InlineKeyboardButton('Купить билеты', callback_data='buytikets')
-podvig_btn = InlineKeyboardButton('Экспозиция "Подвиг народа', callback_data='podvig_btn')
+podvig_btn = InlineKeyboardButton('Экспозиция "Подвиг народа"', callback_data='podvig_btn')
 user_menu.add(expo_info_btn,
               social_btn,
               subscribe_btn,
