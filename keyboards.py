@@ -31,14 +31,10 @@ buy_in_tg = InlineKeyboardButton('Купить в телеграм', callback_da
 buy_on_site = InlineKeyboardButton('Купить на сайте', url='https://tickets.victorymuseum.ru/ru/#id=1')
 tikets_kb.add(buy_in_tg, buy_on_site)
 
-podvig_btn = InlineKeyboardMarkup(row_width=1)
+podvig_kb = InlineKeyboardMarkup(row_width=1)
 url_podvig = InlineKeyboardButton('Прочитать об экспозиции',
                                   url='https://victorymuseum.ru/excursions/podvig-naroda/podvig-naroda/')
-podvig_btn.add(url_podvig)
-
-social_kb = InlineKeyboardMarkup(row_width=1)
-vk_btn = InlineKeyboardButton('VK', url='https://vk.com/muzeypobedy')
-social_kb.add(vk_btn)
+podvig_kb.add(url_podvig)
 
 # markup_request = ReplyKeyboardMarkup(resize_keyboard=True).add(
 #     KeyboardButton('Отправить свой контакт ☎️', request_contact=True)
