@@ -9,11 +9,13 @@ social_btn = InlineKeyboardButton('Мы в соцсетях', callback_data='soc
 subscribe_btn = InlineKeyboardButton('Подписаться на новости', callback_data='user_subscribe')
 buytiket_btn = InlineKeyboardButton('Купить билеты', callback_data='buytikets')
 podvig_btn = InlineKeyboardButton('Экспозиция "Подвиг народа"', callback_data='podvig_btn')
+kino_btn = InlineKeyboardButton('Кинотеатр музея', callback_data='kino_btn')
 user_menu.add(expo_info_btn,
               social_btn,
               subscribe_btn,
               buytiket_btn,
               podvig_btn,
+              kino_btn,
               )
 
 admin_menu = InlineKeyboardMarkup(row_width=1)
@@ -35,6 +37,11 @@ podvig_kb = InlineKeyboardMarkup(row_width=1)
 url_podvig = InlineKeyboardButton('Прочитать об экспозиции',
                                   url='https://victorymuseum.ru/excursions/podvig-naroda/podvig-naroda/')
 podvig_kb.add(url_podvig)
+
+kino_kb = InlineKeyboardMarkup(row_width=1)
+url_kino = InlineKeyboardButton('Узнать больше о кинотеатре',
+                                  url='https://victorymuseum.ru/for-visitors/kinoteatr/')
+kino_kb.add(url_kino)
 
 # markup_request = ReplyKeyboardMarkup(resize_keyboard=True).add(
 #     KeyboardButton('Отправить свой контакт ☎️', request_contact=True)
