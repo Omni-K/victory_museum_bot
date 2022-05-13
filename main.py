@@ -88,7 +88,11 @@ async def buytikets(callback_query: types.CallbackQuery):
     await bot.send_message(callback_query.from_user.id, 'Выберите удобный для вас способ покупки',
                            reply_markup=kbs.tikets_kb)
 
-
+# ----------------------------------------------------------------------------------------  подвиг народа
+@dp.callback_query_handler(text='podvig_btn')
+async def podvig_btn(callback_query: types.CallbackQuery):
+    await bot.send_message(callback_query.from_user.id, 'Узнать больше об экспозиции "Подвиг народа"',
+                           reply_markup=kbs.podvig_kb)
 # ----------------------------------------------------------------------------------------  Подписка
 @dp.callback_query_handler(text='user_subscribe')
 async def yn(callback_query: types.CallbackQuery):
