@@ -1,6 +1,7 @@
+#!venv/bin/python
 import logging
 from pprint import pprint
-import keyboards as kbs
+import keyboards_gor as kbs
 import requests
 from bs4 import BeautifulSoup
 import json
@@ -13,12 +14,10 @@ from aiogram.types import ReplyKeyboardRemove, ReplyKeyboardMarkup, KeyboardButt
 from aiogram.utils.emoji import emojize
 from aiogram.utils.markdown import text
 from aiogram.dispatcher.filters import Text
+from aiogram.types.base import String
 
 
 # ________________________________________________________________
-REQUEST_API_URL = 'http://podvignaroda.ru/Image3/newsearchservlet'
-# json: 1
-
 bot = Bot(token="5253505560:AAFlfKocSp0wANkP4q-E0Jum0yjSAh7vjhU")
 # Объект бота @Heroicact_bot
 
@@ -40,6 +39,10 @@ async def cmd_start(message: types.Message):
 async def menu(callback_query: types.CallbackQuery):
     await bot.send_message(callback_query.from_user.id, 'Что вас интересует?', reply_markup=kbs.user_menu)
 # Меню
+
+@dp.callback_query_handler(text='social_btn')
+async def menu(callback_query: types.CallbackQuery):
+    await bot.send_message(callback_query.from_user.id, 'Мы в социальных сетях:', reply_markup=kbs.soc_kb)
 
 
 @dp.message_handler(Text(equals='Билеты'))
@@ -115,7 +118,8 @@ async def info(message: types.Message):
 
 
 async def search(search_string):    # Функция поиска людей
-    xmlParam = f'<request firstRecordPosition="0" maxNumRecords="51" countResults="true">'
+    REQUEST_API_URL = 'https://podvignaroda.ru/?#tab=navPeople_search'
+    xmlParam = f'<request firstRecordPosition="0" maxNumRecords="11" countResults="true">'
     xmlParam += f'<record fulltextfield="{search_string}" entity="Человек Награждение"></record>'
     xmlParam += f'<record fulltextfield="{search_string}" entity="Человек Представление"></record>'
     xmlParam += f'<record fulltextfield="{search_string}" entity="Человек Картотека"></record>'
@@ -127,6 +131,7 @@ async def search(search_string):    # Функция поиска людей
     async with aiohttp.ClientSession() as session:
         async with session.post(REQUEST_API_URL, data=payload) as response:
             return await response.json()
+
 
 @dp.callback_query_handler(text='user_subscribe')
 async def yn(callback_query: types.CallbackQuery):
@@ -163,20 +168,40 @@ async def unsubscribe(callback_query: types.CallbackQuery):
             await bot.send_message(callback_query.from_user.id, 'Вы отписались от рассылки.',)
 
 
-@dp.callback_query_handler(text='menu')
-async def s_back(callback_query: types.CallbackQuery):
-    await bot.send_message(callback_query.from_user.id, 'Что вас интересует?', reply_markup=kbs.user_menu)
 #-----------------------------------
+async def user_is_admin(user_id) -> bool:
+    """
+    Проверяет является ли пользователь администраторром
+    """
+    return True  # Для тестов всегда возвращает True
+    if user_id in admin_id:
+        return True
+    return False
 
 
-@dp.message_handler(commands=['send'])
-async def notify_users(message: types.Message):
-    print('*')
-    with open("user_ids.txt", "r") as file:
-        for id in file.readlines():
-            if id != '':
-                await bot.send_message(id, 'ало')
+@dp.message_handler(commands=['admin_m'])
+async def admin_menu(msg: types.Message):
+    """
+    Выводит меню для администратора
+    """
+    user_id = msg.from_user.id
+    if not user_is_admin(user_id):
+        await msg.answer('Это только для администраторов')
+    else:
+        txt = f'{msg.from_user.first_name}'
+        await msg.answer(txt, reply_markup=kbs.admin_menu)
 
+
+# @dp.message_handler(commands='admin_notify')
+# async def mailing(message: types.Message):
+#     global mes
+#
+#     await message.answer(mes)
+#
+#     with open('user_ids.txt') as ids:
+#         for line in ids:
+#             user_id = int(line.strip())
+#             bot.send_message(user_id, mes)
 
 
 if __name__ == "__main__":
