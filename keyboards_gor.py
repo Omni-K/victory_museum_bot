@@ -1,8 +1,10 @@
 from aiogram.types import ReplyKeyboardRemove, ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, \
     InlineKeyboardButton
 
+
 nokb = ReplyKeyboardRemove()
 
+s_back = InlineKeyboardButton('Назад', callback_data='menu')
 st_but = InlineKeyboardMarkup(row_width=1)
 mn_but = InlineKeyboardButton('Открыть меню', callback_data='menu')
 st_but.add(mn_but)
@@ -30,20 +32,22 @@ admin_menu.add(notify_btn
 subscribe_yn = InlineKeyboardMarkup(row_width=1)
 subscribe = InlineKeyboardButton('Подписаться', callback_data='subscribe')
 unsubscribe = InlineKeyboardButton('Отписаться', callback_data='unsubscribe')
-s_back = InlineKeyboardButton('Назад', callback_data='menu')
 subscribe_yn.add(subscribe, unsubscribe, s_back)
 
 tikets_kb = InlineKeyboardMarkup(row_width=1)
 buy_in_tg = InlineKeyboardButton('Купить в телеграм', callback_data='buy_in_tg')
 buy_on_site = InlineKeyboardButton('Купить на сайте', url='https://tickets.victorymuseum.ru/ru/#id=1')
-tikets_kb.add(buy_in_tg, buy_on_site)
+tikets_kb.add(buy_in_tg, buy_on_site, s_back)
 
 podvig_kb = InlineKeyboardMarkup(row_width=1)
 url_podvig = InlineKeyboardButton('Прочитать об экспозиции',
                                   url='https://victorymuseum.ru/excursions/podvig-naroda/podvig-naroda/')
-podvig_kb.add(url_podvig)
+podvig_kb.add(url_podvig, s_back)
 
-kino_kb = InlineKeyboardMarkup(row_width=1)
-url_kino = InlineKeyboardButton('Узнать больше о кинотеатре',
-                                  url='https://victorymuseum.ru/for-visitors/kinoteatr/')
-kino_kb.add(url_kino)
+soc_kb = InlineKeyboardMarkup(row_width=1)
+ut = InlineKeyboardButton('Наш Youtube', url='https://www.youtube.com/channel/UCfJd9RT4pg_CckntWhlhH0w')
+rut = InlineKeyboardButton('Наш Rutube', url='https://rutube.ru/channel/24766128/')
+vk = InlineKeyboardButton('Наш VKонтакте', url='https://vk.com/muzeypobedy')
+odn = InlineKeyboardButton('Наши Одноклассники', url='https://ok.ru/group/53681227104435')
+zen = InlineKeyboardButton('Наш Yandex Zen', url='https://zen.yandex.ru/muzeypobedy')
+soc_kb.add(ut, rut, vk, odn, zen, s_back)
