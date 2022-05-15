@@ -1,13 +1,15 @@
-#!venv/bin/python
 import logging
 from pprint import pprint
-import json
+import keyboards as kbs
 import requests
 from bs4 import BeautifulSoup
+import json
 
 import aiohttp
 from aiogram import Bot, Dispatcher, executor, types
-from aiogram.types import ParseMode
+from aiogram.contrib.fsm_storage.memory import MemoryStorage
+from aiogram.types import ReplyKeyboardRemove, ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, \
+    InlineKeyboardButton, ParseMode
 from aiogram.utils.emoji import emojize
 from aiogram.utils.markdown import text
 from aiogram.dispatcher.filters import Text
@@ -20,7 +22,7 @@ REQUEST_API_URL = 'http://podvignaroda.ru/Image3/newsearchservlet'
 bot = Bot(token="5253505560:AAFlfKocSp0wANkP4q-E0Jum0yjSAh7vjhU")
 # Объект бота @Heroicact_bot
 
-dp = Dispatcher(bot)
+dp = Dispatcher(bot, storage=MemoryStorage())
 # Диспетчер для бота
 
 logging.basicConfig(level=logging.INFO)
@@ -30,26 +32,28 @@ logging.basicConfig(level=logging.INFO)
 
 @dp.message_handler(commands='start')
 async def cmd_start(message: types.Message):
-    buttons = ['Помощь', 'Билеты', 'Информация', 'Поклонка', 'Билеты']
-    kbs = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    kbs.add(*buttons)
-    await message.reply(f'Добро пожаловать, {message.from_user.first_name}!', reply_markup=kbs)
+    await message.reply(f'Добро пожаловать, {message.from_user.first_name}!', reply_markup=kbs.st_but)
 # Приветствие
+
+
+@dp.callback_query_handler(text='menu')
+async def menu(callback_query: types.CallbackQuery):
+    await bot.send_message(callback_query.from_user.id, 'Что вас интересует?', reply_markup=kbs.user_menu)
+# Меню
 
 
 @dp.message_handler(Text(equals='Билеты'))
 async def tickets(message: types.Message):
     buttons = [
         types.InlineKeyboardButton('Через сайт', url='https://victorymuseum.ru/for-visitors/prices/'),
-        types.InlineKeyboardButton('Через Telegram')
     ]
     keyboard = types.InlineKeyboardMarkup(row_width=1)
     keyboard.add(*buttons)
-    await message.answer("Кинотеатр Поклонка подарит вам множество прекрасных эмоций!", reply_markup=keyboard)
+    await message.answer("Билеты", reply_markup=keyboard)
 
 
-@dp.message_handler(Text(equals='Поклонка'))
-async def cmd_inline_url(message: types.Message):
+@dp.callback_query_handler(text='kino_btn')
+async def cinema(callback_query: types.CallbackQuery):
     def get_cin():
         headers = {
             'user-agent': 'Mozilla:/5.0(Windows NT 10.0; Win64; x64; rv: 100.0) Gecko/20100101 Firefox/100.0'
@@ -81,13 +85,7 @@ async def cmd_inline_url(message: types.Message):
     buttons.append(types.InlineKeyboardButton('Узнать больше о кинотеатре', url='https://victorymuseum.ru/for-visitors/kinoteatr/'))
     keyboard = types.InlineKeyboardMarkup(row_width=1)
     keyboard.add(*buttons)
-    await message.answer('Список фильмов', reply_markup=keyboard)
-
-
-@dp.message_handler(Text(equals='Помощь'))
-async def help(message: types.Message):
-    await message.reply('''Функционал бота "Подвиг народа":\n/search [ФИО через пробел] - поиск человека по выбранным данным.\n/minfo - отображение основной информации о музее.''')
-# Отклик на команду "help"
+    await bot.send_message(callback_query.from_user.id, 'Список фильмов', reply_markup=keyboard)
 
 
 @dp.message_handler(commands="search")
@@ -129,6 +127,56 @@ async def search(search_string):    # Функция поиска людей
     async with aiohttp.ClientSession() as session:
         async with session.post(REQUEST_API_URL, data=payload) as response:
             return await response.json()
+
+@dp.callback_query_handler(text='user_subscribe')
+async def yn(callback_query: types.CallbackQuery):
+    await bot.send_message(callback_query.from_user.id, 'Согласитесь на подписку', reply_markup=kbs.subscribe_yn)
+
+
+@dp.callback_query_handler(text='subscribe')
+async def subscribe(callback_query: types.CallbackQuery):
+    userid = str(callback_query.from_user.id)
+    with open("user_ids.txt", "r") as file:
+        if userid in file.read():
+            await bot.send_message(callback_query.from_user.id, 'Упс, Вы уже подписаны на рассылку.')
+        else:
+            with open("user_ids.txt", "a+") as file:
+                file.write(userid + "\n")
+                await bot.send_message(callback_query.from_user.id, 'Вы подписались на рассылку!')
+
+
+@dp.callback_query_handler(text='unsubscribe')
+async def unsubscribe(callback_query: types.CallbackQuery):
+    userid = str(callback_query.from_user.id)
+    with open("user_ids.txt", "r") as file:
+        if userid not in file.read():
+            await bot.send_message(callback_query.from_user.id, 'Вы не были подписаны на рассылку.')
+        else:
+            f = open("user_ids.txt", "a+")
+            d = f.readlines()
+            f.seek(0)
+            for i in d:
+                if i != user_id:
+                    f.write(i)
+            f.truncate()
+            f.close()
+            await bot.send_message(callback_query.from_user.id, 'Вы отписались от рассылки.',)
+
+
+@dp.callback_query_handler(text='menu')
+async def s_back(callback_query: types.CallbackQuery):
+    await bot.send_message(callback_query.from_user.id, 'Что вас интересует?', reply_markup=kbs.user_menu)
+#-----------------------------------
+
+
+@dp.message_handler(commands=['send'])
+async def notify_users(message: types.Message):
+    print('*')
+    with open("user_ids.txt", "r") as file:
+        for id in file.readlines():
+            if id != '':
+                await bot.send_message(id, 'ало')
+
 
 
 if __name__ == "__main__":
