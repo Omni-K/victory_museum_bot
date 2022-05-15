@@ -69,39 +69,53 @@ async def tickets(message: types.Message):
 
 @dp.callback_query_handler(text='kino_btn')
 async def cinema(callback_query: types.CallbackQuery):
+
     def get_cin():
         headers = {
             'user-agent': 'Mozilla:/5.0(Windows NT 10.0; Win64; x64; rv: 100.0) Gecko/20100101 Firefox/100.0'
         }
-        url = 'https://victorymuseum.ru/for-visitors/kinoteatr/'
+        url = 'https://poklonka-cinema.ru/films/'
         r = requests.get(url=url, headers=headers)
         soup = BeautifulSoup(r.text, 'lxml')
-        url_cards = soup.find_all('a', class_='img-box')
-        article_cards = soup.find_all('div', class_='text-box')
+        cards = soup.find_all('div', id='s1', class_='seance-elem')
         ls_url = []
         ls_name = []
         ls = []
-        for article in url_cards:
-            article_url = article.get('href')
-            ls_url.append(article_url)
-        for article in article_cards:
-            article_name = article.find('a', class_='name')
-            if article_name is not None:
-                ls_name.append(article_name)
-        for i in ls_name:
-            x = str(i).split('>')
-            q = ''.join(x[1])
-            ls.append(q[:-3])
-        return [ls_url[:4], ls[:4]]
+        ls_time = []
+        lst = []
+        for j in cards:
+            url_cards = j.find_all('a', class_='item')
+            for url in url_cards:
+                article_url = url.get('href')
+                ls_url.append(article_url)
+            for article in url_cards:
+                article_name = article.find('div', class_='name')
+                if article_name is not None:
+                    ls_name.append(article_name)
+            for i in ls_name:
+                x = str(i).split('>')
+                q = ''.join(x[1])
+                ls.append(q[:-5])
+            for time in url_cards:
+                article_time = time.find('div', class_='value')
+                if article_time is not None:
+                    ls_time.append(article_time)
+            for i in ls_time:
+                x = str(i).split('>')
+                q = ''.join(x[1])
+                z = len(q) - 5
+                lst.append(q[:-z])
+        ln = len(ls_url)
+        return [[ls_url[:ln], ls[:ln], lst[:ln]], ln]
 
     buttons = [
-        types.InlineKeyboardButton(get_cin()[1][u], url=get_cin()[0][u]) for u in range(4)
+        types.InlineKeyboardButton(get_cin()[0][2][u] + ': ' + get_cin()[0][1][u], url=get_cin()[0][0][u]) for u in range(get_cin()[1])
     ]
     buttons.append(types.InlineKeyboardButton('Узнать больше о кинотеатре', url='https://victorymuseum.ru/for-visitors/kinoteatr/'))
     buttons.append(kbs.s_back)
     keyboard = types.InlineKeyboardMarkup(row_width=1)
     keyboard.add(*buttons)
-    await bot.send_message(callback_query.from_user.id, 'Список фильмов', reply_markup=keyboard)
+    await bot.send_message(callback_query.from_user.id, 'Сегодня в репертуре:', reply_markup=keyboard)
 
 
 @dp.message_handler(commands="search")
