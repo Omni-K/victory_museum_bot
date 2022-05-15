@@ -106,11 +106,16 @@ async def cinema(callback_query: types.CallbackQuery):
                 z = len(q) - 5
                 lst.append(q[:-z])
         ln = len(ls_url)
-        return [[ls_url[:ln], ls[:ln], lst[:ln]], ln]
+        if ln > 0:
+            return [[ls_url[:ln], ls[:ln], lst[:ln]], ln]
+        return 'Сегодня фильмов нет :('
 
-    buttons = [
-        types.InlineKeyboardButton(get_cin()[0][2][u] + ': ' + get_cin()[0][1][u], url=get_cin()[0][0][u]) for u in range(get_cin()[1])
-    ]
+    if type(get_cin()) == str:
+        buttons = []
+    else:
+        buttons = [
+            types.InlineKeyboardButton(get_cin()[0][2][u] + ': ' + get_cin()[0][1][u], url=get_cin()[0][0][u]) for u in range(get_cin()[1])
+        ]
     buttons.append(types.InlineKeyboardButton('Узнать больше о кинотеатре', url='https://victorymuseum.ru/for-visitors/kinoteatr/'))
     buttons.append(kbs.s_back)
     keyboard = types.InlineKeyboardMarkup(row_width=1)
