@@ -71,13 +71,16 @@ async def user_menu(msg: types.Message):
 
 
 @dp.callback_query_handler(text='expo_info_btn')
-async def process_callback_button1(callback_query: types.CallbackQuery):
+async def expo_info_btn_fnc(callback_query: types.CallbackQuery):
+    """
+    Вызывается при нажатии на кнопку Об экспозиции
+    """
     await bot.answer_callback_query(callback_query.id)
     await bot.send_message(callback_query.from_user.id, 'Нажата\: информация')
 
 
 @dp.callback_query_handler(text='social_btn')
-async def process_callback_button1(callback_query: types.CallbackQuery):
+async def social_btn_fnc(callback_query: types.CallbackQuery):
     await bot.answer_callback_query(callback_query.id)
     await bot.send_message(callback_query.from_user.id, 'Нажата\: Соцсети')
 
@@ -88,17 +91,21 @@ async def buytikets(callback_query: types.CallbackQuery):
     await bot.send_message(callback_query.from_user.id, 'Выберите удобный для вас способ покупки',
                            reply_markup=kbs.tikets_kb)
 
+
 # ----------------------------------------------------------------------------------------  подвиг народа
 @dp.callback_query_handler(text='podvig_btn')
 async def podvig_btn(callback_query: types.CallbackQuery):
     await bot.send_message(callback_query.from_user.id, 'Узнать больше об экспозиции "Подвиг народа"',
                            reply_markup=kbs.podvig_kb)
 
+
 # ----------------------------------------------------------------------------------------  подвиг народа
 @dp.callback_query_handler(text='kino_btn')
 async def kino_btn(callback_query: types.CallbackQuery):
     await bot.send_message(callback_query.from_user.id, 'На сайт кинотеатра музея',
                            reply_markup=kbs.kino_kb)
+
+
 # ----------------------------------------------------------------------------------------  Подписка
 @dp.callback_query_handler(text='user_subscribe')
 async def yn(callback_query: types.CallbackQuery):
@@ -113,14 +120,14 @@ async def subscribe_yes(callback_query: types.CallbackQuery):
     with open("user_ids.txt", "r") as file:
         if userid in file.read():
             allreadyexist = True
-        if allreadyexist:
-            await bot.send_message(callback_query.from_user.id, 'Упс, Вы уже подписаны на рассылку',
+    if allreadyexist:
+        await bot.send_message(callback_query.from_user.id, 'Упс, Вы уже подписаны на рассылку',
+                               reply_markup=kbs.nokb)
+    else:
+        with open("user_ids.txt", "a+") as file:
+            file.write(userid + "\n")
+            await bot.send_message(callback_query.from_user.id, 'Вы подписались на рассылку\!',
                                    reply_markup=kbs.nokb)
-        else:
-            with open("user_ids.txt", "a+") as file:
-                file.write(userid + "\n")
-                await bot.send_message(callback_query.from_user.id, 'Вы подписались на рассылку\!',
-                                       reply_markup=kbs.nokb)
 
 
 # ----------------------------------------------------------------------------  Зона администратора
