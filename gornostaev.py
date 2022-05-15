@@ -1,6 +1,7 @@
 #!venv/bin/python
 import logging
 from pprint import pprint
+import json
 import requests
 from bs4 import BeautifulSoup
 
@@ -49,12 +50,38 @@ async def tickets(message: types.Message):
 
 @dp.message_handler(Text(equals='Поклонка'))
 async def cmd_inline_url(message: types.Message):
+    def get_cin():
+        headers = {
+            'user-agent': 'Mozilla:/5.0(Windows NT 10.0; Win64; x64; rv: 100.0) Gecko/20100101 Firefox/100.0'
+        }
+        url = 'https://victorymuseum.ru/for-visitors/kinoteatr/'
+        r = requests.get(url=url, headers=headers)
+        soup = BeautifulSoup(r.text, 'lxml')
+        url_cards = soup.find_all('a', class_='img-box')
+        article_cards = soup.find_all('div', class_='text-box')
+        ls_url = []
+        ls_name = []
+        ls = []
+        for article in url_cards:
+            article_url = article.get('href')
+            ls_url.append(article_url)
+        for article in article_cards:
+            article_name = article.find('a', class_='name')
+            if article_name is not None:
+                ls_name.append(article_name)
+        for i in ls_name:
+            x = str(i).split('>')
+            q = ''.join(x[1])
+            ls.append(q[:-3])
+        return [ls_url[:4], ls[:4]]
+
     buttons = [
-        types.InlineKeyboardButton('Узнать больше о кинотеатре', url='https://victorymuseum.ru/for-visitors/kinoteatr/')
+        types.InlineKeyboardButton(get_cin()[1][u], url=get_cin()[0][u]) for u in range(4)
     ]
+    buttons.append(types.InlineKeyboardButton('Узнать больше о кинотеатре', url='https://victorymuseum.ru/for-visitors/kinoteatr/'))
     keyboard = types.InlineKeyboardMarkup(row_width=1)
     keyboard.add(*buttons)
-    await message.answer("Кинотеатр Поклонка подарит вам множество прекрасных эмоций!", reply_markup=keyboard)
+    await message.answer('Список фильмов', reply_markup=keyboard)
 
 
 @dp.message_handler(Text(equals='Помощь'))
