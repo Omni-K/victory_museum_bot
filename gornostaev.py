@@ -45,6 +45,18 @@ async def menu(callback_query: types.CallbackQuery):
     await bot.send_message(callback_query.from_user.id, 'Мы в социальных сетях:', reply_markup=kbs.soc_kb)
 
 
+@dp.callback_query_handler(text='expo_info_btn')
+async def process_callback_button1(callback_query: types.CallbackQuery):
+    await bot.answer_callback_query(callback_query.id)
+    await bot.send_message(callback_query.from_user.id, 'Нажата\: информация')
+
+
+@dp.callback_query_handler(text='buytikets')
+async def buytikets(callback_query: types.CallbackQuery):
+    await bot.send_message(callback_query.from_user.id, 'Выберите удобный для вас способ покупки',
+                           reply_markup=kbs.tikets_kb)
+
+
 @dp.message_handler(Text(equals='Билеты'))
 async def tickets(message: types.Message):
     buttons = [
@@ -86,6 +98,7 @@ async def cinema(callback_query: types.CallbackQuery):
         types.InlineKeyboardButton(get_cin()[1][u], url=get_cin()[0][u]) for u in range(4)
     ]
     buttons.append(types.InlineKeyboardButton('Узнать больше о кинотеатре', url='https://victorymuseum.ru/for-visitors/kinoteatr/'))
+    buttons.append(kbs.s_back)
     keyboard = types.InlineKeyboardMarkup(row_width=1)
     keyboard.add(*buttons)
     await bot.send_message(callback_query.from_user.id, 'Список фильмов', reply_markup=keyboard)
@@ -135,7 +148,13 @@ async def search(search_string):    # Функция поиска людей
 
 @dp.callback_query_handler(text='user_subscribe')
 async def yn(callback_query: types.CallbackQuery):
-    await bot.send_message(callback_query.from_user.id, 'Согласитесь на подписку', reply_markup=kbs.subscribe_yn)
+    await bot.send_message(callback_query.from_user.id, 'Хотите ли вы подписаться?', reply_markup=kbs.subscribe_yn)
+
+
+@dp.callback_query_handler(text='podvig_btn')
+async def podvig_btn(callback_query: types.CallbackQuery):
+    await bot.send_message(callback_query.from_user.id, 'Узнать больше об экспозиции "Подвиг народа"',
+                           reply_markup=kbs.podvig_kb)
 
 
 @dp.callback_query_handler(text='subscribe')
