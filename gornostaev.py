@@ -29,27 +29,30 @@ logging.basicConfig(level=logging.INFO)
 # Включаем логирование, чтобы не пропустить важные сообщения
 # ________________________________________________________________
 
-
 @dp.message_handler(commands='start')
 async def cmd_start(message: types.Message):
     await message.reply(f'Добро пожаловать, {message.from_user.first_name}!', reply_markup=kbs.st_but)
 # Приветствие
-
+# ________________________________________________________________
 
 @dp.callback_query_handler(text='menu')
 async def menu(callback_query: types.CallbackQuery):
     await bot.send_message(callback_query.from_user.id, 'Что вас интересует?', reply_markup=kbs.user_menu)
 # Меню
+# ________________________________________________________________
 
 @dp.callback_query_handler(text='social_btn')
 async def menu(callback_query: types.CallbackQuery):
     await bot.send_message(callback_query.from_user.id, 'Мы в социальных сетях:', reply_markup=kbs.soc_kb)
-
+# Социальные сети
+# ________________________________________________________________
 
 @dp.callback_query_handler(text='expo_info_btn')
 async def process_callback_button1(callback_query: types.CallbackQuery):
     await bot.answer_callback_query(callback_query.id)
     await bot.send_message(callback_query.from_user.id, 'Что вас интересует?', reply_markup=kbs.expo_kb)
+# Меню выставок
+# ________________________________________________________________
 
 
 @dp.callback_query_handler(text='expos_link')
