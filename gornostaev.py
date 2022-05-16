@@ -158,32 +158,18 @@ async def cinema(callback_query: types.CallbackQuery):
         await bot.send_message(callback_query.from_user.id, 'Сегодня в репертуре:', reply_markup=keyboard)
 
 
-@dp.message_handler(commands="search")
-async def cmd_test1(message: types.Message):
-    search_string = message.get_args()
-    # fetching urls will take some time, so notify user that everything is OK
-    await types.ChatActions.typing()
-    response = await search(search_string)
-    # Send content
-    pprint(response)
-    if(response['result'] != 'OK'):
-        await bot.send_message(message.chat.id, "Что-то пошло не так", parse_mode=ParseMode.MARKDOWN)
-    else:
-        persons = [person['f2'] + " " + person['f3'] + " " + person['f4'] + " " + person['f9'] for person in response['records']]
-        await bot.send_message(message.chat.id,  emojize(text(*persons, sep='\n')), parse_mode=ParseMode.MARKDOWN)
-
-
-@dp.message_handler(text='mus_info')
+@dp.callback_query_handler(text='mus_info')
 async def info(callback_query: types.CallbackQuery):
     buttons = [
         types.InlineKeyboardButton('Хотите узнать больше?', url='https://victorymuseum.ru/about/')
     ]
     keyboard = types.InlineKeyboardMarkup(row_width=1)
     keyboard.add(*buttons)
-    await message.answer(' Музей Победы — главный военно-исторический музей России по тематике Великой Отечественной и Второй мировой войн.', reply_markup=keyboard)
+    keyboard.add(kbs.s_back)
+    await bot.send_message(callback_query.from_user.id, 'Музей Победы — главный военно-исторический музей России по тематике Великой Отечественной и Второй мировой войн.', reply_markup=keyboard)
     # отклик на команду minfo (информация о музее)
-
-
+#________________________________________________________
+#Нужен фикс
 async def search(search_string):    # Функция поиска людей
     REQUEST_API_URL = 'https://podvignaroda.ru/?#tab=navPeople_search'
     xmlParam = f'<request firstRecordPosition="0" maxNumRecords="11" countResults="true">'
@@ -199,6 +185,21 @@ async def search(search_string):    # Функция поиска людей
         async with session.post(REQUEST_API_URL, data=payload) as response:
             return await response.json()
 
+@dp.callback_query_handler(text="siblings_btn")
+async def sibl(callback_query: types.CallbackQuery):
+    search_string = callback_query.message.get_args()
+    # fetching urls will take some time, so notify user that everything is OK
+    await types.ChatActions.typing()
+    response = await search(search_string)
+    # Send content
+    pprint(response)
+    if(response['result'] != 'OK'):
+        await bot.send_message(callback_query.from_user.id, "Что-то пошло не так", parse_mode=ParseMode.MARKDOWN)
+    else:
+        persons = [person['f2'] + " " + person['f3'] + " " + person['f4'] + " " + person['f9'] for person in response['records']]
+        await bot.send_message(callback_query.from_user.id,  emojize(text(*persons, sep='\n')), parse_mode=ParseMode.MARKDOWN)
+
+#________________________________________________________
 
 @dp.callback_query_handler(text='user_subscribe')
 async def yn(callback_query: types.CallbackQuery):
