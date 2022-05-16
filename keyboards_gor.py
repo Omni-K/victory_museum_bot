@@ -35,7 +35,8 @@ subscribe_yn.add(subscribe, unsubscribe, s_back)
 tikets_kb = InlineKeyboardMarkup(row_width=1)
 buy_in_tg = InlineKeyboardButton('Купить в телеграм', callback_data='buy_in_tg')
 buy_on_site = InlineKeyboardButton('Купить на сайте', url='https://tickets.victorymuseum.ru/ru/#id=1')
-tikets_kb.add(buy_in_tg, buy_on_site, s_back)
+t_back = InlineKeyboardButton('Вернуться назад', callback_data='expo_info_btn')
+tikets_kb.add(buy_in_tg, buy_on_site, t_back)
 
 
 expo_kb = InlineKeyboardMarkup(row_width=1)
