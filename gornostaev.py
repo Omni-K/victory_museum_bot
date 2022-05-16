@@ -120,7 +120,10 @@ async def cinema(callback_query: types.CallbackQuery):
     buttons.append(kbs.s_back)
     keyboard = types.InlineKeyboardMarkup(row_width=1)
     keyboard.add(*buttons)
-    await bot.send_message(callback_query.from_user.id, 'Сегодня в репертуре:', reply_markup=keyboard)
+    if type(get_cin()) == str:
+        await bot.send_message(callback_query.from_user.id, get_cin(), reply_markup=keyboard)
+    else:
+        await bot.send_message(callback_query.from_user.id, 'Сегодня в репертуре:', reply_markup=keyboard)
 
 
 @dp.message_handler(commands="search")
