@@ -5,7 +5,7 @@ import keyboards_gor as kbs
 import requests
 from bs4 import BeautifulSoup
 import json
-
+#   @Heroicact_bot
 
 import aiohttp
 from aiogram import Bot, Dispatcher, executor, types

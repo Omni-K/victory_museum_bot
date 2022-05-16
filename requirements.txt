@@ -1,3 +1,5 @@
 aiogram~=2.20
 requests~=2.27.1
 aiohttp~=3.8.1
+beautifulsoup4~=4.11.1
+emoji~=1.7.0
