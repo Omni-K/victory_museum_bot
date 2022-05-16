@@ -48,23 +48,55 @@ async def menu(callback_query: types.CallbackQuery):
 @dp.callback_query_handler(text='expo_info_btn')
 async def process_callback_button1(callback_query: types.CallbackQuery):
     await bot.answer_callback_query(callback_query.id)
-    await bot.send_message(callback_query.from_user.id, 'Нажата\: информация')
+    await bot.send_message(callback_query.from_user.id, 'Что вас интересует?', reply_markup=kbs.expo_kb)
+
+
+@dp.callback_query_handler(text='expos_link')
+async def process_callback_button1(callback_query: types.CallbackQuery):
+
+    def get_expo():
+        headers = {
+            'user-agent': 'Mozilla:/5.0(Windows NT 10.0; Win64; x64; rv: 100.0) Gecko/20100101 Firefox/100.0'
+        }
+        url = 'https://victorymuseum.ru/museum-complex/glavnoe-zdanie-muzeya/'
+        r = requests.get(url=url, headers=headers)
+        soup = BeautifulSoup(r.text, 'lxml')
+        cards = soup.find_all('div', class_='column_box__title')
+        ls_url = []
+        ls_name = []
+        ls = []
+        for j in cards:
+            url_cards = j.find_all('a')
+            for url in url_cards:
+                article_url = url.get('href')
+                if article_url not in ls_url:
+                    ls_url.append('https://victorymuseum.ru/museum-complex' + article_url)
+            for article in url_cards:
+                article_name = article
+                if article_name is not None:
+                    ls_name.append(article_name)
+            for i in ls_name:
+                x = str(i).split('>')
+                q = ''.join(x[1])
+                if q[:-3] not in ls:
+                    ls.append(q[:-3])
+        ln = 3
+        return [ls_url[:ln], ls[:ln], ln]
+
+    buttons = [
+        types.InlineKeyboardButton(get_expo()[1][u], url=get_expo()[0][u]) for u in range(get_expo()[2])
+    ]
+    buttons.append(types.InlineKeyboardButton('Больше выставок', url='https://victorymuseum.ru/museum-complex/glavnoe-zdanie-muzeya/'))
+    buttons.append(kbs.s_back)
+    keyboard = types.InlineKeyboardMarkup(row_width=1)
+    keyboard.add(*buttons)
+    await bot.send_message(callback_query.from_user.id, 'Рекомендуем посетить', reply_markup=keyboard)
 
 
 @dp.callback_query_handler(text='buytikets')
 async def buytikets(callback_query: types.CallbackQuery):
     await bot.send_message(callback_query.from_user.id, 'Выберите удобный для вас способ покупки',
                            reply_markup=kbs.tikets_kb)
-
-
-@dp.message_handler(Text(equals='Билеты'))
-async def tickets(message: types.Message):
-    buttons = [
-        types.InlineKeyboardButton('Через сайт', url='https://victorymuseum.ru/for-visitors/prices/'),
-    ]
-    keyboard = types.InlineKeyboardMarkup(row_width=1)
-    keyboard.add(*buttons)
-    await message.answer("Билеты", reply_markup=keyboard)
 
 
 @dp.callback_query_handler(text='kino_btn')
@@ -141,8 +173,8 @@ async def cmd_test1(message: types.Message):
         await bot.send_message(message.chat.id,  emojize(text(*persons, sep='\n')), parse_mode=ParseMode.MARKDOWN)
 
 
-@dp.message_handler(Text(equals='Информация'))
-async def info(message: types.Message):
+@dp.message_handler(text='mus_info')
+async def info(callback_query: types.CallbackQuery):
     buttons = [
         types.InlineKeyboardButton('Хотите узнать больше?', url='https://victorymuseum.ru/about/')
     ]
