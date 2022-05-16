@@ -87,7 +87,7 @@ async def process_callback_button1(callback_query: types.CallbackQuery):
         types.InlineKeyboardButton(get_expo()[1][u], url=get_expo()[0][u]) for u in range(get_expo()[2])
     ]
     buttons.append(types.InlineKeyboardButton('Больше выставок', url='https://victorymuseum.ru/museum-complex/glavnoe-zdanie-muzeya/'))
-    buttons.append(kbs.s_back)
+    buttons.append(kbs.t_back)
     keyboard = types.InlineKeyboardMarkup(row_width=1)
     keyboard.add(*buttons)
     await bot.send_message(callback_query.from_user.id, 'Рекомендуем посетить', reply_markup=keyboard)
@@ -149,7 +149,7 @@ async def cinema(callback_query: types.CallbackQuery):
             types.InlineKeyboardButton(get_cin()[0][2][u] + ': ' + get_cin()[0][1][u], url=get_cin()[0][0][u]) for u in range(get_cin()[1])
         ]
     buttons.append(types.InlineKeyboardButton('Узнать больше о кинотеатре', url='https://victorymuseum.ru/for-visitors/kinoteatr/'))
-    buttons.append(kbs.s_back)
+    buttons.append(kbs.t_back)
     keyboard = types.InlineKeyboardMarkup(row_width=1)
     keyboard.add(*buttons)
     if type(get_cin()) == str:
@@ -204,12 +204,6 @@ async def sibl(callback_query: types.CallbackQuery):
 @dp.callback_query_handler(text='user_subscribe')
 async def yn(callback_query: types.CallbackQuery):
     await bot.send_message(callback_query.from_user.id, 'Хотите ли вы подписаться?', reply_markup=kbs.subscribe_yn)
-
-
-@dp.callback_query_handler(text='podvig_btn')
-async def podvig_btn(callback_query: types.CallbackQuery):
-    await bot.send_message(callback_query.from_user.id, 'Узнать больше об экспозиции "Подвиг народа"',
-                           reply_markup=kbs.podvig_kb)
 
 
 @dp.callback_query_handler(text='subscribe')
