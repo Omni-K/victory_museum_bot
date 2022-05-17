@@ -206,7 +206,7 @@ async def unsubscribe(callback_query: types.CallbackQuery):
             d = f.readlines()
             f.seek(0)
             for i in d:
-                if i != user_id:
+                if i != userid:
                     f.write(i)
             f.truncate()
             f.close()
