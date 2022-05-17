@@ -5,6 +5,7 @@ import keyboards_gor as kbs
 import requests
 from bs4 import BeautifulSoup
 import json
+import lxml
 #   @Heroicact_bot
 
 import aiohttp
@@ -34,6 +35,9 @@ async def cmd_start(message: types.Message):
     await message.reply(f'Добро пожаловать, {message.from_user.first_name}!', reply_markup=kbs.st_but)
 # Приветствие
 # ________________________________________________________________
+@dp.message_handler(commands='menu')
+async def men(message: types.Message):
+    await message.reply('Что вас интересует?', reply_markup=kbs.user_menu)
 
 @dp.callback_query_handler(text='menu')
 async def menu(callback_query: types.CallbackQuery):
@@ -84,7 +88,7 @@ async def process_callback_button1(callback_query: types.CallbackQuery):
                 q = ''.join(x[1])
                 if q[:-3] not in ls:
                     ls.append(q[:-3])
-        ln = 3
+        ln = len(ls_url)
         return [ls_url[:ln], ls[:ln], ln]
 
     buttons = [
@@ -173,37 +177,6 @@ async def info(callback_query: types.CallbackQuery):
     await bot.send_message(callback_query.from_user.id, 'Музей Победы — главный военно-исторический музей России по тематике Великой Отечественной и Второй мировой войн.', reply_markup=keyboard)
     # отклик на команду minfo (информация о музее)
 #________________________________________________________
-#Нужен фикс
-async def search(search_string):    # Функция поиска людей
-    REQUEST_API_URL = 'https://podvignaroda.ru/?#tab=navPeople_search'
-    xmlParam = f'<request firstRecordPosition="0" maxNumRecords="11" countResults="true">'
-    xmlParam += f'<record fulltextfield="{search_string}" entity="Человек Награждение"></record>'
-    xmlParam += f'<record fulltextfield="{search_string}" entity="Человек Представление"></record>'
-    xmlParam += f'<record fulltextfield="{search_string}" entity="Человек Картотека"></record>'
-    xmlParam += f'<record fulltextfield="{search_string}" entity="Человек Юбилейная Картотека"></record>'
-    xmlParam += f'<record fulltextfield="{search_string}" entity="Человек Ин Картотека"></record>'
-    xmlParam += '</request>'
-
-    payload = {'json': 1, 'xmlParam': xmlParam}
-    async with aiohttp.ClientSession() as session:
-        async with session.post(REQUEST_API_URL, data=payload) as response:
-            return await response.json()
-
-@dp.callback_query_handler(text="siblings_btn")
-async def sibl(callback_query: types.CallbackQuery):
-    search_string = callback_query.message.get_args()
-    # fetching urls will take some time, so notify user that everything is OK
-    await types.ChatActions.typing()
-    response = await search(search_string)
-    # Send content
-    pprint(response)
-    if(response['result'] != 'OK'):
-        await bot.send_message(callback_query.from_user.id, "Что-то пошло не так", parse_mode=ParseMode.MARKDOWN)
-    else:
-        persons = [person['f2'] + " " + person['f3'] + " " + person['f4'] + " " + person['f9'] for person in response['records']]
-        await bot.send_message(callback_query.from_user.id,  emojize(text(*persons, sep='\n')), parse_mode=ParseMode.MARKDOWN)
-
-#________________________________________________________
 
 @dp.callback_query_handler(text='user_subscribe')
 async def yn(callback_query: types.CallbackQuery):
@@ -224,9 +197,9 @@ async def subscribe(callback_query: types.CallbackQuery):
 
 @dp.callback_query_handler(text='unsubscribe')
 async def unsubscribe(callback_query: types.CallbackQuery):
-    userid = str(callback_query.from_user.id)
+    user_id = str(callback_query.from_user.id)
     with open("user_ids.txt", "r") as file:
-        if userid not in file.read():
+        if user_id not in file.read():
             await bot.send_message(callback_query.from_user.id, 'Вы не были подписаны на рассылку.')
         else:
             f = open("user_ids.txt", "a+")
@@ -262,18 +235,6 @@ async def admin_menu(msg: types.Message):
     else:
         txt = f'{msg.from_user.first_name}'
         await msg.answer(txt, reply_markup=kbs.admin_menu)
-
-
-# @dp.message_handler(commands='admin_notify')
-# async def mailing(message: types.Message):
-#     global mes
-#
-#     await message.answer(mes)
-#
-#     with open('user_ids.txt') as ids:
-#         for line in ids:
-#             user_id = int(line.strip())
-#             bot.send_message(user_id, mes)
 
 
 if __name__ == "__main__":
