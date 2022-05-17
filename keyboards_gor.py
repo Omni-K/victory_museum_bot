@@ -1,6 +1,6 @@
 from aiogram.types import ReplyKeyboardRemove, ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, \
     InlineKeyboardButton
-
+import unicodedata
 
 nokb = ReplyKeyboardRemove()
 
@@ -14,18 +14,21 @@ mus_info = InlineKeyboardButton('О музее', callback_data='mus_info')
 expo_info_btn = InlineKeyboardButton('Что посетить?', callback_data='expo_info_btn')
 social_btn = InlineKeyboardButton('Мы в соцсетях', callback_data='social_btn')
 subscribe_btn = InlineKeyboardButton('Новости музея', callback_data='user_subscribe')
-siblings_btn = InlineKeyboardButton('Узнать о родственниках-ветеранах', callback_data='siblings_btn')
+search_btn = InlineKeyboardButton('Узнать о родственниках-ветеранах',
+                                  url='https://pamyat-naroda.ru/heroes/?static_hash=c29709454e0e4b2f379603cd966af235v9')
 user_menu.add(mus_info,
               expo_info_btn,
               social_btn,
               subscribe_btn,
-              siblings_btn
+              search_btn,
               )
+
 
 admin_menu = InlineKeyboardMarkup(row_width=1)
 notify_btn = InlineKeyboardButton('Запустить рассылку новостей', callback_data='admin_notify')
 admin_menu.add(notify_btn
                )
+
 
 subscribe_yn = InlineKeyboardMarkup(row_width=1)
 subscribe = InlineKeyboardButton('Подписаться', callback_data='subscribe')
@@ -33,10 +36,9 @@ unsubscribe = InlineKeyboardButton('Отписаться', callback_data='unsubs
 subscribe_yn.add(subscribe, unsubscribe, s_back)
 
 tikets_kb = InlineKeyboardMarkup(row_width=1)
-buy_in_tg = InlineKeyboardButton('Купить в телеграм', callback_data='buy_in_tg')
 buy_on_site = InlineKeyboardButton('Купить на сайте', url='https://tickets.victorymuseum.ru/ru/#id=1')
 t_back = InlineKeyboardButton('Вернуться назад', callback_data='expo_info_btn')
-tikets_kb.add(buy_in_tg, buy_on_site, t_back)
+tikets_kb.add(buy_on_site, t_back)
 
 
 expo_kb = InlineKeyboardMarkup(row_width=1)
