@@ -13,7 +13,7 @@ user_menu = InlineKeyboardMarkup(row_width=1)
 mus_info = InlineKeyboardButton('О музее', callback_data='mus_info')
 expo_info_btn = InlineKeyboardButton('Что посетить?', callback_data='expo_info_btn')
 social_btn = InlineKeyboardButton('Мы в соцсетях', callback_data='social_btn')
-subscribe_btn = InlineKeyboardButton('Управление рассылеой', callback_data='user_subscribe')
+subscribe_btn = InlineKeyboardButton('Управление рассылкой', callback_data='user_subscribe')
 search_btn = InlineKeyboardButton('Узнать о родственниках-ветеранах',
                                   url='https://pamyat-naroda.ru/heroes/?static_hash=c29709454e0e4b2f379603cd966af235v9')
 user_menu.add(mus_info,

@@ -264,13 +264,17 @@ async def send_notify_fnc(msg: types.Message, state: FSMContext):
     if msg.text.lower() == 'да':
         txt_to_send = await state.get_data()
         mes = txt_to_send['txt']
+        sent = 0
         with open('user_ids.txt') as ids:
             for line in ids:
                 user_id = int(line.strip())
                 try:
+                    sent += 1
                     await bot.send_message(user_id, mes, parse_mode='', reply_markup=types.ReplyKeyboardRemove())
                 except Exception:
                     pass
+        await msg.answer(f'Рассылка завершена. Отправлено сообщений: {sent}', parse_mode='',
+                         reply_markup=types.ReplyKeyboardRemove())
     else:
         await msg.answer('Отправка отменена', reply_markup=types.ReplyKeyboardRemove())
     await state.finish()
