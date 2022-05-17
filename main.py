@@ -42,7 +42,8 @@ logging.basicConfig(level=logging.INFO)
 
 @dp.message_handler(commands='start')
 async def cmd_start(message: types.Message):
-    await message.reply(f'Добро пожаловать, {message.from_user.first_name}!', reply_markup=kbs.st_but)
+    msg_text = f'Добро пожаловать, {message.from_user.first_name}!\nЭто бот Музея Победы.\nВы можете использовать команду \\menu для вызова основного меню пользователя '
+    await message.reply(msg_text, reply_markup=kbs.st_but)
 # Приветствие
 # ________________________________________________________________
 @dp.message_handler(commands='menu')
@@ -269,8 +270,8 @@ async def send_notify_fnc(msg: types.Message, state: FSMContext):
             for line in ids:
                 user_id = int(line.strip())
                 try:
-                    sent += 1
                     await bot.send_message(user_id, mes, parse_mode='', reply_markup=types.ReplyKeyboardRemove())
+                    sent += 1
                 except Exception:
                     pass
         await msg.answer(f'Рассылка завершена. Отправлено сообщений: {sent}', parse_mode='',
