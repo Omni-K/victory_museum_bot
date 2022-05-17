@@ -268,7 +268,7 @@ async def send_notify_fnc(msg: types.Message, state: FSMContext):
             for line in ids:
                 user_id = int(line.strip())
                 try:
-                    await bot.send_message(user_id, mes, parse_mode='')
+                    await bot.send_message(user_id, mes, parse_mode='', reply_markup=types.ReplyKeyboardRemove())
                 except Exception:
                     pass
     else:
