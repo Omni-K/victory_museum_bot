@@ -284,8 +284,12 @@ async def cancel_cmd(msg: types.Message, state: FSMContext):
     await state.finish()
     await msg.answer('Отменено', reply_markup=types.ReplyKeyboardRemove())
 
+async def shutdown_fnc(msg: types.Message):
+    await msg.answer('Выключаю бота')
+    import sys
+    sys.exit()
 
-
+dp.register_message_handler(shutdown_fnc, commands='shutdown')
 dp.register_message_handler(cancel_cmd, commands='cancel')
 dp.register_message_handler(wait_for_msg_fnc, state=NotifyOrder.waiting_for_msg)
 dp.register_message_handler(send_notify_fnc, state=NotifyOrder.waiting_for_confirm)
