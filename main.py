@@ -89,7 +89,8 @@ async def process_callback_button1(callback_query: types.CallbackQuery):
             for url in url_cards:
                 article_url = url.get('href')
                 if article_url not in ls_url:
-                    ls_url.append('https://victorymuseum.ru/museum-complex' + article_url)
+                    print(article_url)
+                    ls_url.append('https://victorymuseum.ru' + article_url)
             for article in url_cards:
                 article_name = article
                 if article_name is not None:
@@ -229,8 +230,9 @@ async def user_is_admin(user_id) -> bool:
     """
     Проверяет является ли пользователь администраторром
     """
+    admin_ids = ['902834713', '673596786']
     return True  # Для тестов всегда возвращает True
-    if user_id in admin_id:
+    if str(user_id) in admin_ids:
         return True
     return False
 
