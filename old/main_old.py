@@ -117,14 +117,14 @@ async def subscribe_yes(callback_query: types.CallbackQuery):
     userid = str(callback_query.from_user.id)
 
     allreadyexist = False
-    with open("user_ids.txt", "r") as file:
+    with open("../user_ids.txt", "r") as file:
         if userid in file.read():
             allreadyexist = True
     if allreadyexist:
         await bot.send_message(callback_query.from_user.id, 'Упс, Вы уже подписаны на рассылку',
                                reply_markup=kbs.nokb)
     else:
-        with open("user_ids.txt", "a+") as file:
+        with open("../user_ids.txt", "a+") as file:
             file.write(userid + "\n")
             await bot.send_message(callback_query.from_user.id, 'Вы подписались на рассылку\!',
                                    reply_markup=kbs.nokb)
@@ -161,7 +161,7 @@ async def notify(message):
     else:
         txt = f'{command_sender=}'
         await message.answer(txt)
-        with open('user_ids.txt') as ids:
+        with open('../user_ids.txt') as ids:
             for line in ids:
                 user_id = int(line.strip())
                 await bot.send_message(user_id, f'уведомление от {command_sender}')

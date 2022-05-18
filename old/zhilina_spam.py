@@ -22,7 +22,7 @@ async def cmd_test1(message: types.Message):
 @dp.message_handler(commands=['send'])
 async def notify_users(message: types.Message):
     print('*')
-    with open("user_ids.txt", "r") as file:
+    with open("../user_ids.txt", "r") as file:
         for id in file.readlines():
             if id != '':
                 await bot.send_message(id, 'ало')
