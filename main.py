@@ -25,7 +25,7 @@ from aiogram.types.base import String
 # ________________________________________________________________
 # Объект бота @Heroicact_bot
 
-token_jc = '1794414260:AAHictDJ7hxUNIGSKtdLfbHnYCc9vWuV4eU'
+
 token_hero = "5253505560:AAFlfKocSp0wANkP4q-E0Jum0yjSAh7vjhU"
 bot = Bot(token=token_hero)
 dp = Dispatcher(bot, storage=MemoryStorage())
